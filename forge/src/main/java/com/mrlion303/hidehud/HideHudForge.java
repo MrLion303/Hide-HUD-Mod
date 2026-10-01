@@ -3,6 +3,7 @@ package com.mrlion303.hidehud;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +55,7 @@ public class HideHudForge {
     }
 
     private java.util.Collection<ServerPlayer> getPlayers(
-        com.mojang.brigadier.context.CommandContext<?> context, String name
+        com.mojang.brigadier.context.CommandContext<CommandSourceStack> context, String name
     ) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         return EntityArgument.getEntities(context, name).stream()
             .filter(Entity::isAlive)
@@ -72,7 +73,7 @@ public class HideHudForge {
 
     public record HudPacket(boolean hide, int seconds, boolean hand) {
         public static void encode(HudPacket p, FriendlyByteBuf b) {
-            b.writeBoolean(p.hide).writeVarInt(p.seconds).writeBoolean(p.hand);
+            b.writeBoolean(p.hide); b.writeVarInt(p.seconds); b.writeBoolean(p.hand);
         }
 
         public static HudPacket decode(FriendlyByteBuf b) {
