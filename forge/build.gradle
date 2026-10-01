@@ -1,0 +1,6 @@
+plugins { id 'net.minecraftforge.gradle' }
+base { archivesName = 'hidehud-forge-1.20.1' }
+minecraft { mappings channel: 'official', version: '1.20.1' }
+dependencies { minecraft 'net.minecraftforge:forge:1.20.1-47.3.11' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+jar.finalizedBy('reobfJar')
