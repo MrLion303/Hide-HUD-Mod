@@ -37,20 +37,32 @@ public class HideHudForge {
                 .then(Commands.literal("hide").then(Commands.argument("targets", EntityArgument.entities())
                     .executes(c -> send(getPlayers(c, "targets"), true, 0, false))
                     .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                        .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), false))
+                        .executes(c -> send(getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), false))
                         .then(Commands.argument("hand", BoolArgumentType.bool())
-                            .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
-                .then(Commands.literal("show").then(Commands.argument("targets", EntityArgument.players())
-                    .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, 0, false))
+                            .executes(c -> send(getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
+                .then(Commands.literal("show").then(Commands.argument("targets", EntityArgument.entities())
+                    .executes(c -> send(getPlayers(c, "targets"), false, 0, false))
                     .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                        .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false))
+                        .executes(c -> send(getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false))
                         .then(Commands.argument("hand", BoolArgumentType.bool())
-                            .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
+                            .executes(c -> send(getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false)))))
         );
     }
 
-    private java.util.Collection<ServerPlayer> getPlayers(com.mojang.brigadier.context.CommandContext<?> c, String name) throws com.mojang.brigadier.exceptions.CommandSyntaxException {\n        return EntityArgument.getEntities(c, name).stream().filter(Entity::isAlive).filter(e -> e instanceof ServerPlayer).map(e -> (ServerPlayer) e).toList();\n    }\n\n    private int send(java.util.Collection<ServerPlayer> players, boolean hide, int seconds, boolean hand) {
-        for (ServerPlayer player : players) CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new HudPacket(hide, seconds, hand));
+    private java.util.Collection<ServerPlayer> getPlayers(
+        com.mojang.brigadier.context.CommandContext<?> context, String name
+    ) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        return EntityArgument.getEntities(context, name).stream()
+            .filter(Entity::isAlive)
+            .filter(e -> e instanceof ServerPlayer)
+            .map(e -> (ServerPlayer) e)
+            .toList();
+    }
+
+    private int send(java.util.Collection<ServerPlayer> players, boolean hide, int seconds, boolean hand) {
+        for (ServerPlayer player : players) {
+            CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new HudPacket(hide, seconds, hand));
+        }
         return players.size();
     }
 
@@ -58,13 +70,17 @@ public class HideHudForge {
         public static void encode(HudPacket p, FriendlyByteBuf b) {
             b.writeBoolean(p.hide).writeVarInt(p.seconds).writeBoolean(p.hand);
         }
+
         public static HudPacket decode(FriendlyByteBuf b) {
             return new HudPacket(b.readBoolean(), b.readVarInt(), b.readBoolean());
         }
+
         public static void handle(HudPacket p, java.util.function.Supplier<net.minecraftforge.network.NetworkEvent.Context> ctx) {
             var c = ctx.get();
             c.enqueueWork(() -> {
-                if (net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient()) HideHudState.set(p.hide, p.seconds, p.hand);
+                if (net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient()) {
+                    HideHudState.set(p.hide, p.seconds, p.hand);
+                }
             });
             c.setPacketHandled(true);
         }
