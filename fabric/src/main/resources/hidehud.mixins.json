@@ -3,5 +3,5 @@
   "minVersion": "0.8",
   "package": "com.mrlion303.hidehud.mixin",
   "compatibilityLevel": "JAVA_17",
-  "client": ["GuiRenderMixin"]
+  "client": ["GuiRenderMixin", "GameRendererMixin"]
 }
