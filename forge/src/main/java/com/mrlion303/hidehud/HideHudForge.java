@@ -49,7 +49,7 @@ public class HideHudForge {
                         .executes(c -> send(getPlayers(c, "targets"), false, 0, false))
                         .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
                             .executes(c -> send(getPlayers(c, "targets"), false,
-                                IntegerArgumentType.getInteger(c, "seconds"), false))))
+                                IntegerArgumentType.getInteger(c, "seconds"), false)))))
         );
     }
 
