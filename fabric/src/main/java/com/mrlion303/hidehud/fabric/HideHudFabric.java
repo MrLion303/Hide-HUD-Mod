@@ -5,10 +5,10 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
@@ -42,7 +42,7 @@ public class HideHudFabric implements ModInitializer {
     }
 
     private static java.util.Collection<ServerPlayerEntity> getPlayers(
-            com.mojang.brigadier.context.CommandContext<?> context, String name
+            com.mojang.brigadier.context.CommandContext<ServerCommandSource> context, String name
     ) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         return EntityArgumentType.getEntities(context, name).stream()
             .filter(Entity::isAlive)
