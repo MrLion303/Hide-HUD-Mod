@@ -5,7 +5,8 @@ license="MIT"
 modId="hidehud"
 version="1.0.0"
 displayName="Hide HUD"
-authors="MrLion303"
+logoFile="icon.png"
+authors="LAYON & NegativeStudios"
 description='''Server-controlled complete HUD visibility with optional hand hiding and fade transitions.'''
 [[dependencies.hidehud]]
 modId="forge"
