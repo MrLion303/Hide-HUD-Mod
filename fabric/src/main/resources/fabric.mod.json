@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "hidehud",
+  "version": "1.0.0",
+  "name": "Hide HUD",
+  "description": "Server-controlled complete HUD visibility with optional hand hiding and fade transitions.",
+  "authors": ["MrLion303"],
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.mrlion303.hidehud.fabric.HideHudFabric"],
+    "client": ["com.mrlion303.hidehud.fabric.HideHudFabricClient"]
+  },
+  "mixins": ["hidehud.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.20.1",
+    "fabric-api": "*"
+  }
+}
