@@ -34,18 +34,22 @@ public class HideHudForge {
     private void registerCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(
             Commands.literal("hud").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("hide").then(Commands.argument("targets", EntityArgument.entities())
-                    .executes(c -> send(getPlayers(c, "targets"), true, 0, false))
-                    .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                        .executes(c -> send(getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), false))
-                        .then(Commands.argument("hand", BoolArgumentType.bool())
-                            .executes(c -> send(getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
-                .then(Commands.literal("show").then(Commands.argument("targets", EntityArgument.entities())
-                    .executes(c -> send(getPlayers(c, "targets"), false, 0, false))
-                    .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                        .executes(c -> send(getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false))
-                        .then(Commands.argument("hand", BoolArgumentType.bool())
-                            .executes(c -> send(getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false)))))
+                .then(Commands.literal("hide")
+                    .then(Commands.argument("targets", EntityArgument.entities())
+                        .executes(c -> send(getPlayers(c, "targets"), true, 0, false))
+                        .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
+                            .executes(c -> send(getPlayers(c, "targets"), true,
+                                IntegerArgumentType.getInteger(c, "seconds"), false))
+                            .then(Commands.argument("hand", BoolArgumentType.bool())
+                                .executes(c -> send(getPlayers(c, "targets"), true,
+                                    IntegerArgumentType.getInteger(c, "seconds"),
+                                    BoolArgumentType.getBool(c, "hand")))))))
+                .then(Commands.literal("show")
+                    .then(Commands.argument("targets", EntityArgument.entities())
+                        .executes(c -> send(getPlayers(c, "targets"), false, 0, false))
+                        .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
+                            .executes(c -> send(getPlayers(c, "targets"), false,
+                                IntegerArgumentType.getInteger(c, "seconds"), false))))
         );
     }
 
