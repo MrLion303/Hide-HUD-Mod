@@ -1,6 +1,5 @@
 package com.mrlion303.hidehud.fabric;
 
-import com.mrlion303.hidehud.HideHudState;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.api.ModInitializer;
@@ -16,25 +15,36 @@ import net.minecraft.world.entity.Entity;
 public class HideHudFabric implements ModInitializer {
     public static final ResourceLocation CHANNEL = new ResourceLocation("hidehud", "state");
 
-    @Override public void onInitialize() {
+    @Override
+    public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> dispatcher.register(
             Commands.literal("hud").requires(s -> s.hasPermission(2))
                 .then(Commands.literal("hide").then(Commands.argument("targets", EntityArgument.entities())
                     .executes(c -> send(getPlayers(c, "targets"), true, 0, false))
                     .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                        .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), false))
+                        .executes(c -> send(getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), false))
                         .then(Commands.argument("hand", BoolArgumentType.bool())
-                            .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
-                .then(Commands.literal("show").then(Commands.argument("targets", EntityArgument.players())
-                    .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, 0, false))
+                            .executes(c -> send(getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
+                .then(Commands.literal("show").then(Commands.argument("targets", EntityArgument.entities())
+                    .executes(c -> send(getPlayers(c, "targets"), false, 0, false))
                     .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                        .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false))
+                        .executes(c -> send(getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false))
                         .then(Commands.argument("hand", BoolArgumentType.bool())
-                            .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
+                            .executes(c -> send(getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false)))))
         ));
     }
 
-    private static java.util.Collection<ServerPlayer> getPlayers(com.mojang.brigadier.context.CommandContext<?> c, String name) throws com.mojang.brigadier.exceptions.CommandSyntaxException {\n        return EntityArgument.getEntities(c, name).stream().filter(Entity::isAlive).filter(e -> e instanceof ServerPlayer).map(e -> (ServerPlayer) e).toList();\n    }\n\n    private static int send(java.util.Collection<ServerPlayer> players, boolean hide, int seconds, boolean hand) {
+    private static java.util.Collection<ServerPlayer> getPlayers(
+        com.mojang.brigadier.context.CommandContext<?> context, String name
+    ) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        return EntityArgument.getEntities(context, name).stream()
+            .filter(Entity::isAlive)
+            .filter(e -> e instanceof ServerPlayer)
+            .map(e -> (ServerPlayer) e)
+            .toList();
+    }
+
+    private static int send(java.util.Collection<ServerPlayer> players, boolean hide, int seconds, boolean hand) {
         for (ServerPlayer player : players) {
             FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
             buf.writeBoolean(hide).writeVarInt(seconds).writeBoolean(hand);
