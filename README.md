@@ -28,3 +28,7 @@ Minecraft 1.20.1 client/server utility for hiding the complete in-game HUD from 
 The mod suppresses the vanilla HUD and loader/API HUD overlay paths rather than only hiding individual vanilla widgets. This is intended to also suppress HUD overlays such as minimaps when they render through the standard HUD/overlay pipeline, including Xaero's minimap on supported 1.20.1 installations.
 
 No client command is required: the server command sends the HUD state to each targeted client.
+
+## Build
+
+Fabric uses Yarn mappings `1.20.1+build.10:v2` for the 1.20.1 source set.
