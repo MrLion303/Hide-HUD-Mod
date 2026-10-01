@@ -17,22 +17,19 @@ public class HideHudFabric implements ModInitializer {
 
     @Override public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> dispatcher.register(
-            Commands.literal("hud")
-                .requires(s -> s.hasPermission(2))
-                .then(Commands.literal("hide")
-                    .then(Commands.argument("targets", EntityArgument.players())
-                        .executes(c -> send(c.getSource().getPlayers(), true, 0, false))
-                        .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                            .executes(c -> send(c.getSource().getPlayers(), true, IntegerArgumentType.getInteger(c, "seconds"), false))
-                            .then(Commands.argument("hand", BoolArgumentType.bool())
-                                .executes(c -> send(c.getSource().getPlayers(), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
-                .then(Commands.literal("show")
-                    .then(Commands.argument("targets", EntityArgument.players())
-                        .executes(c -> send(c.getSource().getPlayers(), false, 0, false))
-                        .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
-                            .executes(c -> send(c.getSource().getPlayers(), false, IntegerArgumentType.getInteger(c, "seconds"), false))
-                            .then(Commands.argument("hand", BoolArgumentType.bool())
-                                .executes(c -> send(c.getSource().getPlayers(), false, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
+            Commands.literal("hud").requires(s -> s.hasPermission(2))
+                .then(Commands.literal("hide").then(Commands.argument("targets", EntityArgument.players())
+                    .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, 0, false))
+                    .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
+                        .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), false))
+                        .then(Commands.argument("hand", BoolArgumentType.bool())
+                            .executes(c -> send(EntityArgument.getPlayers(c, "targets"), true, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
+                .then(Commands.literal("show").then(Commands.argument("targets", EntityArgument.players())
+                    .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, 0, false))
+                    .then(Commands.argument("seconds", IntegerArgumentType.integer(0, 3600))
+                        .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), false))
+                        .then(Commands.argument("hand", BoolArgumentType.bool())
+                            .executes(c -> send(EntityArgument.getPlayers(c, "targets"), false, IntegerArgumentType.getInteger(c, "seconds"), BoolArgumentType.getBool(c, "hand")))))))
         ));
     }
 
