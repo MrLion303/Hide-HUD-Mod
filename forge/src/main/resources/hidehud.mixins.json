@@ -3,5 +3,5 @@
   "minVersion": "0.8",
   "package": "com.mrlion303.hidehud",
   "compatibilityLevel": "JAVA_17",
-  "client": ["XaeroMinimapMixin"]
+  "client": ["XaeroMinimapMixin", "NegativeUtilsWaypointMixin"]
 }
