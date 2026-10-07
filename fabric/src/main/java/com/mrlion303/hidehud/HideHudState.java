@@ -2,6 +2,7 @@ package com.mrlion303.hidehud;
 
 public final class HideHudState {
     private HideHudState() {}
+
     public static boolean hidden;
     public static boolean hideHand;
     public static long transitionStart;
@@ -18,16 +19,17 @@ public final class HideHudState {
 
     public static float progress() {
         if (transitionDurationMs <= 0L) return hidden ? 1f : 0f;
-        float p = Math.min(1f, (System.currentTimeMillis() - transitionStart) / (float) transitionDurationMs);
+        float p = Math.min(1f,
+            (System.currentTimeMillis() - transitionStart) / (float) transitionDurationMs);
         return transitionHiding ? p : 1f - p;
     }
 
-    public static boolean fullyHidden() {
-        return hidden && progress() >= 1f;
+    public static float visibilityAlpha() {
+        if (transitionDurationMs <= 0L) return hidden ? 0f : 1f;
+        return transitionHiding ? 1f - progress() : progress();
     }
 
-    public static int fadeOverlayColor() {
-        int alpha = Math.round(progress() * 255f);
-        return (alpha << 24);
+    public static boolean fullyHidden() {
+        return hidden && visibilityAlpha() <= 0f;
     }
 }
