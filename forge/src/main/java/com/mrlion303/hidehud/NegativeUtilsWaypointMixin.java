@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Pseudo
 @Mixin(targets = "com.negative.negativeutils.WaypointRenderer", remap = false)
 public class NegativeUtilsWaypointMixin {
-    @Inject(method = {"onRenderHud", "onRenderLevel", "onRenderTrackedPlayer"}, at = @At("HEAD"), cancellable = true, require = 0)
+    @Inject(method = "onRenderHud", at = @At("HEAD"), cancellable = true, require = 0)
     private static void hideHud(CallbackInfo ci) {
         if (HideHudState.fullyHidden()) {
             ci.cancel();
@@ -19,7 +19,7 @@ public class NegativeUtilsWaypointMixin {
         RenderSystem.setShaderColor(1f, 1f, 1f, HideHudState.visibilityAlpha());
     }
 
-    @Inject(method = {"onRenderHud", "onRenderLevel", "onRenderTrackedPlayer"}, at = @At("RETURN"), require = 0)
+    @Inject(method = "onRenderHud", at = @At("RETURN"), require = 0)
     private static void restoreHudColor(CallbackInfo ci) {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
